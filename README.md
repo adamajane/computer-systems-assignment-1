@@ -1,2 +1,2 @@
-# computer-systems-assignment-1
-Computer Systems (02132) - Assignment 1
+# Computer Systems - Assignment 1
+First assignment in the Computer Systems (02132) course.
