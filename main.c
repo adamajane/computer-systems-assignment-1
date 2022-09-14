@@ -64,6 +64,9 @@ int main(int argc, char** argv)
   //Run inversion
   invert(input_image,output_image);
 
+  //Run blackwhite conversion
+  convert_blackwhite(input_image, output_image);
+
   //Save image to file
   write_bitmap(output_image, argv[2]);
 
