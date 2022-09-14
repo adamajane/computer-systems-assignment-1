@@ -23,15 +23,23 @@
 }
 
 // this function converts the image to black and white
- void convert_blackwhite(unsigned char input_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS], unsigned char output_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS]){
+ void convert_blackwhite(unsigned char output_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS], unsigned char blackwhite_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS]){
+  int res = 0;
   for (int x = 0; x < BMP_WIDTH; x++)
   {
     for (int y = 0; y < BMP_HEIGTH; y++)
     {
-      for (int c = 0; c < BMP_CHANNELS; c++)
-      {
-      output_image[x][y][c] = 255 - input_image[x][y][c];
+      if ((output_image[x][y][0] + output_image[x][y][1] + output_image[x][y][2]) /3 > 130){
+      blackwhite_image[x][y][0] = 0;
+      blackwhite_image[x][y][1] = 0;
+      blackwhite_image[x][y][2] = 0;
       }
+      else {
+      blackwhite_image[x][y][0] = 255;
+      blackwhite_image[x][y][1] = 255;
+      blackwhite_image[x][y][2] = 255;
+      }
+    
     }
   }
 }
@@ -40,6 +48,7 @@
   //Declaring the array to store the image (unsigned char = unsigned 8 bit)
   unsigned char input_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS];
   unsigned char output_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS];
+  unsigned char blackwhite_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS];
 
 //Main function
 int main(int argc, char** argv)
@@ -64,8 +73,11 @@ int main(int argc, char** argv)
   //Run inversion
   invert(input_image,output_image);
 
+  //Run blackwhite conversion
+  convert_blackwhite(output_image, blackwhite_image);
+
   //Save image to file
-  write_bitmap(output_image, argv[2]);
+  write_bitmap(blackwhite_image, argv[2]);
 
   printf("Done!\n");
   return 0;
