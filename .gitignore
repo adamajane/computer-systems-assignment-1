@@ -2,3 +2,5 @@
 .DS_Store
 # Visual Studio Code files
 .vscode
+# Executable file generated after compiling on macOS
+main.out
