@@ -49,24 +49,27 @@ void convert_blackwhite(unsigned char output_image[BMP_WIDTH][BMP_HEIGTH][BMP_CH
 
 // This function erodes the black and white image using binary erosion
 
-void erode_image()
+void erode_image(unsigned char blackwhite_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS], unsigned char eroded_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS])
 {
-  // Initializes the structuring element  
+  // Initializes the structuring element
 
   int structuring_element[3][3] = {{0, 1, 0}, {1, 1, 1}, {0, 1, 0}};
 
-  for (int i = 0; i < 3;i++){
-    for (int j = 0; j < 3;j++)
-      printf("Matrix element:%d\n",structuring_element[i][j]);
+  for (int x = 0; x < BMP_WIDTH; x++)
+  {
+    for (int y = 0; y < BMP_HEIGTH; y++)
+    {
+      // TODO: If, for any pixel, one of it's neighbors are black, then the pixel itself will become black
+
+    }
   }
-
-
 }
 
 // Declaring the array to store the image (unsigned char = unsigned 8 bit)
 unsigned char input_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS];
 unsigned char output_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS];
 unsigned char blackwhite_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS];
+unsigned char eroded_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS];
 
 // Main function
 int main(int argc, char **argv)
@@ -94,11 +97,11 @@ int main(int argc, char **argv)
   // Run blackwhite conversion
   convert_blackwhite(output_image, blackwhite_image);
 
-  // Save image to file
-  write_bitmap(blackwhite_image, argv[2]);
-
   // Runs the erosion
-  erode_image();
+  erode_image(blackwhite_image, eroded_image);
+
+  // Save image to file
+  write_bitmap(eroded_image, argv[2]);
 
   printf("Done!\n");
   return 0;
