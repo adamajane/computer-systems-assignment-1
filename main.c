@@ -59,12 +59,21 @@ void erode_image(unsigned char blackwhite_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANN
   {
     for (int y = 0; y < BMP_HEIGTH; y++)
     {
-      // TODO: If, for any pixel, one of it's neighbors are black, then the pixel itself will become black
-
+      if (blackwhite_image[x][y][0] == 255 && blackwhite_image[x][y][1] == 255 && blackwhite_image[x][y][2] == 255)
+      {
+        if (blackwhite_image[x][y + 1][0] == 0 && blackwhite_image[x][y + 1][1] == 0 && blackwhite_image[x][y + 1][2] == 0
+        || blackwhite_image[x][y - 1][0] == 0 && blackwhite_image[x][y - 1][1] == 0 && blackwhite_image[x][y - 1][2] == 0
+        || blackwhite_image[x - 1][y][0] == 0 && blackwhite_image[x - 1][y + 1][1] == 0 && blackwhite_image[x - 1][y + 1][2] == 0
+        || blackwhite_image[x + 1][y + 1][0] == 0 && blackwhite_image[x + 1][y + 1][1] == 0 && blackwhite_image[x + 1][y + 1][2] == 0)
+        {
+          eroded_image[x][y][0] = 255;
+          eroded_image[x][y][1] = 255;
+          eroded_image[x][y][2] = 255;
+        }
+      }
     }
   }
 }
-
 // Declaring the array to store the image (unsigned char = unsigned 8 bit)
 unsigned char input_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS];
 unsigned char output_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS];
