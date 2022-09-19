@@ -52,6 +52,7 @@ void erode_image(unsigned char blackwhite_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANN
 {
 
   // TODO: Add a while-loop that stops the erosion when all the pixels are black
+  // TODO: Each step of erosion should be saved
   for (int x = 0; x < BMP_WIDTH; x++)
   {
     for (int y = 0; y < BMP_HEIGTH; y++)
