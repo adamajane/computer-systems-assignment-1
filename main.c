@@ -48,32 +48,60 @@ void convert_blackwhite(unsigned char output_image[BMP_WIDTH][BMP_HEIGTH][BMP_CH
 }
 
 // This function erodes the black and white image using binary erosion
-
 void erode_image(unsigned char blackwhite_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS], unsigned char eroded_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS])
 {
-  // Initializes the structuring element
 
-  int structuring_element[3][3] = {{0, 1, 0}, {1, 1, 1}, {0, 1, 0}};
-
+  // TODO: Add a while-loop that stops the erosion when all the pixels are black
   for (int x = 0; x < BMP_WIDTH; x++)
   {
     for (int y = 0; y < BMP_HEIGTH; y++)
     {
-      if (blackwhite_image[x][y][0] == 255 && blackwhite_image[x][y][1] == 255 && blackwhite_image[x][y][2] == 255)
+      if (blackwhite_image[x][y - 1][0] == 0 && blackwhite_image[x][y - 1][1] == 0 && blackwhite_image[x][y - 1][2] == 0)
       {
-        if (blackwhite_image[x][y + 1][0] == 0 && blackwhite_image[x][y + 1][1] == 0 && blackwhite_image[x][y + 1][2] == 0
-        || blackwhite_image[x][y - 1][0] == 0 && blackwhite_image[x][y - 1][1] == 0 && blackwhite_image[x][y - 1][2] == 0
-        || blackwhite_image[x - 1][y][0] == 0 && blackwhite_image[x - 1][y + 1][1] == 0 && blackwhite_image[x - 1][y + 1][2] == 0
-        || blackwhite_image[x + 1][y + 1][0] == 0 && blackwhite_image[x + 1][y + 1][1] == 0 && blackwhite_image[x + 1][y + 1][2] == 0)
-        {
-          eroded_image[x][y][0] = 255;
-          eroded_image[x][y][1] = 255;
-          eroded_image[x][y][2] = 255;
-        }
+        eroded_image[x][y][0] = 255;
+        eroded_image[x][y][1] = 255;
+        eroded_image[x][y][2] = 255;
+      }
+      else if (blackwhite_image[x][y + 1][0] == 0 && blackwhite_image[x][y + 1][1] == 0 && blackwhite_image[x][y + 1][2] == 0)
+      {
+        eroded_image[x][y][0] = 255;
+        eroded_image[x][y][1] = 255;
+        eroded_image[x][y][2] = 255;
+      }
+      else if (blackwhite_image[x - 1][y][0] == 0 && blackwhite_image[x - 1][y][1] == 0 && blackwhite_image[x - 1][y][2] == 0)
+      {
+        eroded_image[x][y][0] = 255;
+        eroded_image[x][y][1] = 255;
+        eroded_image[x][y][2] = 255;
+      }
+      else if (blackwhite_image[x + 1][y][0] == 0 && blackwhite_image[x + 1][y][1] == 0 && blackwhite_image[x + 1][y][2] == 0)
+      {
+        eroded_image[x][y][0] = 255;
+        eroded_image[x][y][1] = 255;
+        eroded_image[x][y][2] = 255;
+      }
+    }
+  }
+  for (int x = 0; x < BMP_WIDTH; x++)
+  {
+    for (int y = 0; y < BMP_HEIGTH; y++)
+    {
+      if (eroded_image[x][y][0] == 0 && eroded_image[x][y][1] == 0 && eroded_image[x][y][2] == 0)
+      {
+        eroded_image[x][y][0] = 255;
+        eroded_image[x][y][1] = 255;
+        eroded_image[x][y][2] = 255;
+      }
+      else if (eroded_image[x][y][0] == 255 && eroded_image[x][y][1] == 255 && eroded_image[x][y][2] == 255)
+      {
+        eroded_image[x][y][0] = 0;
+        eroded_image[x][y][1] = 0;
+        eroded_image[x][y][2] = 0;
       }
     }
   }
 }
+
 // Declaring the array to store the image (unsigned char = unsigned 8 bit)
 unsigned char input_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS];
 unsigned char output_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS];
@@ -105,6 +133,8 @@ int main(int argc, char **argv)
 
   // Run blackwhite conversion
   convert_blackwhite(output_image, blackwhite_image);
+
+  // TODO: Maybe we should save the black/white photo before running the erosion
 
   // Runs the erosion
   erode_image(blackwhite_image, eroded_image);
