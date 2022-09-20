@@ -21,27 +21,34 @@
     }
   }
 }
-
+// this function checks all the pixels in the exclusion frame to see if there
+// is any white pixels. If there is, it should return 1. If there isn't, it 
+// should return 0.
 int checkExclusionFrame (){
+  // initiating for-loop, to go through 14 pixels on all 4 sides of the exclusionframe(square)
 		for (int exclusion_pixel = 0; exclusion_pixel <= 14; exclusion_pixel++) {
+      // if statement checks for white pixels in the UPPER side of square
 			if(blackwhite_image[(x-1)+exclusion_pixel][(y-1)][0]== 255 
       && blackwhite_image[(x-1)+exclusion_pixel][(y-1)][1] == 255 
       && blackwhite_image[(x-1)+exclusion_pixel][(y-1)][2] == 255) {
 				return 1;
 				break;
 			}
+      // if statement checks for white pixels in the LOWER side of square
 			else if (blackwhite_image[(x-1)+exclusion_pixel][((y-1)+13)][0]== 255 
       && blackwhite_image[(x-1)+exclusion_pixel][((y-1)+13)][1] == 255 
       && blackwhite_image[(x-1)+exclusion_pixel][((y-1)+13)][2] == 255) {
 				return 1;
 				break;
 			}
+      // if statement checks for white pixels in the LEFT side of square
 			else if(blackwhite_image[(x-1)][(y-1)+exclusion_pixel][0]== 255 
       && blackwhite_image[(x-1)][(y-1)+exclusion_pixel][1] == 255 
       && blackwhite_image[(x-1)][(y-1)+exclusion_pixel][2] == 255) {
 				return 1;
 				break;
 			}
+      // if statement checks for white pixels in the RIGHT side of square
 			else if(blackwhite_image[((x-1)+13)][(y-1)+exclusion_pixel][0]== 255 
       && blackwhite_image[((x-1)+13)][(y-1)+exclusion_pixel][1] == 255 
       && blackwhite_image[((x-1)+13)][(y-1)+exclusion_pixel][2] == 255) {
@@ -57,7 +64,11 @@ int checkExclusionFrame (){
 
 	
 	
-	
+	// for every pixel in the image, we check the 12x12 pixel area to the right and down.
+  // if there is a white pixel in this area, we should proceed to check if the 
+  // exclusionframe contains any white pixels, using the "checkExclusionFrame()"- function.
+  // If it doesn't contain a white pixel, we will add 1 to cell_count, and move on to
+  // the next pixel.
 	void detectCell (unsigned char blackwhite_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS]){
 		  int cell_count = 0;
       int detect_x;
@@ -66,6 +77,7 @@ int checkExclusionFrame (){
 		  {
 		    for (int y = 0; y < BMP_HEIGTH-11; y++)
 		    {
+          // the next nested for-loop go through the 12x12 pixel area and checks for white pixel
 		    	for (detect_x = 0; detect_x <= 11; detect_x++ ) {
 		    		
 		    		for (detect_y = 0; detect_y <= 11; detect_y++) {
@@ -94,6 +106,7 @@ int checkExclusionFrame (){
 		    	}
 		    } 	
 		  }  
+      // finally prints the total count of cells
       printf("%d", cell_count);
      }
 
