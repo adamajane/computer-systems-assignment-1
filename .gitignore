@@ -4,3 +4,5 @@
 .vscode
 # Executable file generated after compiling on macOS
 main.out
+# Executable file generated after compiling on Windows
+main.exe
