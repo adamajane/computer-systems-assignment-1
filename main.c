@@ -24,7 +24,7 @@
 // this function checks all the pixels in the exclusion frame to see if there
 // is any white pixels. If there is, it should return 1. If there isn't, it 
 // should return 0.
-int checkExclusionFrame (){
+int checkExclusionFrame (unsigned char blackwhite_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS],int x, int y){
   // initiating for-loop, to go through 14 pixels on all 4 sides of the exclusionframe(square)
 		for (int exclusion_pixel = 0; exclusion_pixel <= 14; exclusion_pixel++) {
       // if statement checks for white pixels in the UPPER side of square
@@ -86,14 +86,14 @@ int checkExclusionFrame (){
               && blackwhite_image[x+detect_x][y+detect_y][1] == 255 
 		    			&& blackwhite_image[x+detect_x][y+detect_y][2] == 255) {
 
-		    				if(checkExclusionFrame() == 0) {
+		    				if(checkExclusionFrame(blackwhite_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS], x, y) == 0) {
 			    			  cell_count++;
 			    			  break;
 		    				}
 			    			
 			    		}
 		    		}
-		    		if(checkExclusionFrame() == 0) {
+		    		if(checkExclusionFrame(blackwhite_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS], x, y) == 0) {
 
               if (blackwhite_image[x+detect_x][y+detect_y][0] == 255 
               && blackwhite_image[x+detect_x][y+detect_y][1] == 255 
