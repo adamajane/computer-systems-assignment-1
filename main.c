@@ -22,6 +22,81 @@
   }
 }
 
+int checkExclusionFrame (){
+		for (int exclusion_pixel = 0; exclusion_pixel <= 14; exclusion_pixel++) {
+			if(blackwhite_image[(x-1)+exclusion_pixel][(y-1)][0]== 255 
+      && blackwhite_image[(x-1)+exclusion_pixel][(y-1)][1] == 255 
+      && blackwhite_image[(x-1)+exclusion_pixel][(y-1)][2] == 255) {
+				return 1;
+				break;
+			}
+			else if (blackwhite_image[(x-1)+exclusion_pixel][((y-1)+13)][0]== 255 
+      && blackwhite_image[(x-1)+exclusion_pixel][((y-1)+13)][1] == 255 
+      && blackwhite_image[(x-1)+exclusion_pixel][((y-1)+13)][2] == 255) {
+				return 1;
+				break;
+			}
+			else if(blackwhite_image[(x-1)][(y-1)+exclusion_pixel][0]== 255 
+      && blackwhite_image[(x-1)][(y-1)+exclusion_pixel][1] == 255 
+      && blackwhite_image[(x-1)][(y-1)+exclusion_pixel][2] == 255) {
+				return 1;
+				break;
+			}
+			else if(blackwhite_image[((x-1)+13)][(y-1)+exclusion_pixel][0]== 255 
+      && blackwhite_image[((x-1)+13)][(y-1)+exclusion_pixel][1] == 255 
+      && blackwhite_image[((x-1)+13)][(y-1)+exclusion_pixel][2] == 255) {
+				return 1;
+				break;
+			}
+      
+		}
+		return 0;
+		
+	}
+
+
+	
+	
+	
+	void detectCell (unsigned char blackwhite_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS]){
+		  int cell_count = 0;
+      int detect_x;
+      int detect_y;
+		  for (int x = 0; x < BMP_WIDTH-11; x++)
+		  {
+		    for (int y = 0; y < BMP_HEIGTH-11; y++)
+		    {
+		    	for (detect_x = 0; detect_x <= 11; detect_x++ ) {
+		    		
+		    		for (detect_y = 0; detect_y <= 11; detect_y++) {
+
+		    			if (blackwhite_image[x+detect_x][y+detect_y][0] == 255 
+              && blackwhite_image[x+detect_x][y+detect_y][1] == 255 
+		    			&& blackwhite_image[x+detect_x][y+detect_y][2] == 255) {
+
+		    				if(checkExclusionFrame() == 0) {
+			    			  cell_count++;
+			    			  break;
+		    				}
+			    			
+			    		}
+		    		}
+		    		if(checkExclusionFrame() == 0) {
+
+              if (blackwhite_image[x+detect_x][y+detect_y][0] == 255 
+              && blackwhite_image[x+detect_x][y+detect_y][1] == 255 
+		    			&& blackwhite_image[x+detect_x][y+detect_y][2] == 255) {
+
+		    			  break;
+              }
+	    			}
+		    		
+		    	}
+		    } 	
+		  }  
+      printf("%d", cell_count);
+     }
+
 // This function converts the image to black and white (applies the binary threshold)
  void convert_blackwhite(unsigned char output_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS], unsigned char blackwhite_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS]){
   int res = 0;
@@ -78,6 +153,9 @@ int main(int argc, char** argv)
 
   //Save image to file
   write_bitmap(blackwhite_image, argv[2]);
+
+  detectCell(blackwhite_image);
+
 
   printf("Done!\n");
   return 0;
