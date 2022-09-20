@@ -26,7 +26,7 @@
 // should return 0.
 int checkExclusionFrame (unsigned char blackwhite_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS],int x, int y){
   // initiating for-loop, to go through 14 pixels on all 4 sides of the exclusionframe(square)
-		for (int exclusion_pixel = 0; exclusion_pixel <= 14; exclusion_pixel++) {
+		for (int exclusion_pixel = 0; exclusion_pixel < 14; exclusion_pixel++) {
       // if statement checks for white pixels in the UPPER side of square
 			if(blackwhite_image[(x-1)+exclusion_pixel][(y-1)][0]== 255 
       && blackwhite_image[(x-1)+exclusion_pixel][(y-1)][1] == 255 
@@ -86,14 +86,14 @@ int checkExclusionFrame (unsigned char blackwhite_image[BMP_WIDTH][BMP_HEIGTH][B
               && blackwhite_image[x+detect_x][y+detect_y][1] == 255 
 		    			&& blackwhite_image[x+detect_x][y+detect_y][2] == 255) {
 
-		    				if(checkExclusionFrame(blackwhite_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS], x, y) == 0) {
+		    				if(checkExclusionFrame(blackwhite_image, x, y) == 0) {
 			    			  cell_count++;
 			    			  break;
 		    				}
 			    			
 			    		}
 		    		}
-		    		if(checkExclusionFrame(blackwhite_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS], x, y) == 0) {
+		    		if(checkExclusionFrame(blackwhite_image, x, y) == 0) {
 
               if (blackwhite_image[x+detect_x][y+detect_y][0] == 255 
               && blackwhite_image[x+detect_x][y+detect_y][1] == 255 
@@ -107,7 +107,7 @@ int checkExclusionFrame (unsigned char blackwhite_image[BMP_WIDTH][BMP_HEIGTH][B
 		    } 	
 		  }  
       // finally prints the total count of cells
-      printf("%d", cell_count);
+      printf("%d \n", cell_count);
      }
 
 // This function converts the image to black and white (applies the binary threshold)
