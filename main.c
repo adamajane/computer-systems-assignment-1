@@ -50,15 +50,37 @@ void convert_blackwhite(unsigned char output_image[BMP_WIDTH][BMP_HEIGTH][BMP_CH
 // This function erodes the black and white image using binary erosion
 void erode_image(unsigned char blackwhite_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS], unsigned char eroded_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS])
 {
+
+  int white_count;
+  int black_count;
+  int other_count;
+  for (int x = 0; x < BMP_WIDTH; x++)
+  {
+    for (int y = 0; y < BMP_HEIGTH; y++)
+    {
+      if (blackwhite_image[x][y][0] == 0 && blackwhite_image[x][y][1] == 0 && blackwhite_image[x][y][2] == 0)
+      {
+        black_count++;
+      }
+      else if (blackwhite_image[x][y][0] == 255 && blackwhite_image[x][y][1] == 255 && blackwhite_image[x][y][2] == 255)
+      {
+        white_count++;
+      }
+      else
+      {
+        other_count++;
+      }
+    }
+  }
+
+  int pixel_count = 0;
   for (int x = 0; x < BMP_WIDTH; x++)
   {
     for (int y = 0; y < BMP_HEIGTH; y++)
     {
       // TODO: The erosion of the image should stop when all the pixels are black (The image is white and black)
-      // while (eroded_image[x][y][0] == 0 && eroded_image[x][y][1] == 0 && eroded_image[x][y][2] == 0)
+      // while (eroded_image[x][y][0] == 255 && eroded_image[x][y][1] == 255 && eroded_image[x][y][2] == 255)
       // {
-      // }
-
       // Change the color of the pixels according to the structuring element
       if (blackwhite_image[x][y - 1][0] == 0 && blackwhite_image[x][y - 1][1] == 0 && blackwhite_image[x][y - 1][2] == 0)
       {
@@ -84,28 +106,27 @@ void erode_image(unsigned char blackwhite_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANN
         eroded_image[x][y][1] = 255;
         eroded_image[x][y][2] = 255;
       }
+      pixel_count++;
+      // The following for-loops converts the image back to black and white (where cells are white)
+      if (eroded_image[x][y][0] == 0 && eroded_image[x][y][1] == 0 && eroded_image[x][y][2] == 0)
+      {
+        eroded_image[x][y][0] = 255;
+        eroded_image[x][y][1] = 255;
+        eroded_image[x][y][2] = 255;
+      }
+      else if (eroded_image[x][y][0] == 255 && eroded_image[x][y][1] == 255 && eroded_image[x][y][2] == 255)
+      {
+        eroded_image[x][y][0] = 0;
+        eroded_image[x][y][1] = 0;
+        eroded_image[x][y][2] = 0;
+      }
+      //}
     }
   }
-  // The following for-loops converts the image back to black and white (where cells are white)
-
-  // for (int x = 0; x < BMP_WIDTH; x++)
-  // {
-  //   for (int y = 0; y < BMP_HEIGTH; y++)
-  //   {
-  //     if (eroded_image[x][y][0] == 0 && eroded_image[x][y][1] == 0 && eroded_image[x][y][2] == 0)
-  //     {
-  //       eroded_image[x][y][0] = 255;
-  //       eroded_image[x][y][1] = 255;
-  //       eroded_image[x][y][2] = 255;
-  //     }
-  //     else if (eroded_image[x][y][0] == 255 && eroded_image[x][y][1] == 255 && eroded_image[x][y][2] == 255)
-  //     {
-  //       eroded_image[x][y][0] = 0;
-  //       eroded_image[x][y][1] = 0;
-  //       eroded_image[x][y][2] = 0;
-  //     }
-  //   }
-  // }
+  printf("Pixels: %d\n", pixel_count);
+  printf("White count: %d\n", white_count);
+  printf("Black count: %d\n", black_count);
+  printf("Other count: %d\n", other_count);
 }
 
 // Declaring the array to store the image (unsigned char = unsigned 8 bit)
