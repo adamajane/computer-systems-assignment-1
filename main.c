@@ -57,6 +57,7 @@ void erode_image(unsigned char blackwhite_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANN
   {
     for (int y = 0; y < BMP_HEIGTH; y++)
     {
+      // Change the color of the pixels according to the structuring element
       if (blackwhite_image[x][y - 1][0] == 0 && blackwhite_image[x][y - 1][1] == 0 && blackwhite_image[x][y - 1][2] == 0)
       {
         eroded_image[x][y][0] = 255;
