@@ -72,8 +72,8 @@ int checkExclusionFrame (unsigned char blackwhite_image[BMP_WIDTH][BMP_HEIGTH][B
   // exclusionframe contains any white pixels, using the "checkExclusionFrame()"- function.
   // If it doesn't contain a white pixel, we will add 1 to cell_count, color the entire 
   // area black, and move on to the next pixel.
-	void detectCell (unsigned char blackwhite_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS]){
-		  int cell_count = 0;
+	int detectCell (unsigned char blackwhite_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS]){
+      int cell_count = 0;
       int detect_x;
       int detect_y;
       int flag = 0;
@@ -124,7 +124,8 @@ int checkExclusionFrame (unsigned char blackwhite_image[BMP_WIDTH][BMP_HEIGTH][B
         
 		  }  
       // finally prints the total count of cells
-      printf("%d \n", cell_count);
+      
+      return cell_count;
      }
 
 // This function converts the image to black and white (applies the binary threshold)
@@ -227,6 +228,7 @@ unsigned char output_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS];
 unsigned char blackwhite_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS];
 unsigned char eroded_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS];
 
+
 // Main function
 int main(int argc, char **argv)
 {
@@ -252,6 +254,7 @@ int main(int argc, char **argv)
 
   int pixelChange = 0;
   int imgIndex = 0;
+  int cell_count = 0;
   copyImage(blackwhite_image, eroded_image);
 
   // Do-while loop that allows us to run erosion and detection as long as the image is not fully eroded
@@ -268,17 +271,18 @@ int main(int argc, char **argv)
     copyImage(eroded_image, blackwhite_image);
     imgIndex += 1;
     // TODO: Detection step (keep track of location of detected cells)
+    cell_count += detectCell(blackwhite_image);
+    
+    
   } while (pixelChange == 1 /*&& imgIndex < 10*/);
 
   // TODO: Generate output image
 
   // TODO: Save output image and print results
+  printf("Cell count: %d\n", cell_count);
 
   // Save image of each erosion step to file
   write_bitmap(eroded_image, argv[2]);
-
-  detectCell(blackwhite_image);
-
 
   printf("Done!\n");
   return 0;
