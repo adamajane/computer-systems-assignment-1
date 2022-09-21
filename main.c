@@ -9,6 +9,8 @@
 #include "cbmp.h"
 #include <string.h>
 
+unsigned char detected_cells[BMP_WIDTH][BMP_HEIGTH];
+
 // Function to invert pixels of an image (negative)
 void invert(unsigned char input_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS], unsigned char output_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS])
 {
@@ -28,32 +30,34 @@ void invert(unsigned char input_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS], unsi
 // should return 0.
 int checkExclusionFrame (unsigned char blackwhite_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS],int x, int y){
   // initiating for-loop, to go through 14 pixels on all 4 sides of the exclusionframe(square)
+    int initial_posX = x-7;
+    int initial_posY = y-7;
 		for (int exclusion_pixel = 0; exclusion_pixel < 14; exclusion_pixel++) {
       // if statement checks for white pixels in the UPPER side of square
-			if(blackwhite_image[(x-7)+exclusion_pixel][(y-7)][0]== 255 
-      && blackwhite_image[(x-7)+exclusion_pixel][(y-7)][1] == 255 
-      && blackwhite_image[(x-7)+exclusion_pixel][(y-7)][2] == 255) {
+			if(blackwhite_image[(initial_posX)+exclusion_pixel][(initial_posY)][0]== 255 
+      && blackwhite_image[(initial_posX)+exclusion_pixel][(initial_posY)][1] == 255 
+      && blackwhite_image[(initial_posX)+exclusion_pixel][(initial_posY)][2] == 255) {
 				return 1;
 				break;
 			}
       // if statement checks for white pixels in the LOWER side of square
-			else if (blackwhite_image[(x-7)+exclusion_pixel][((y-7)+13)][0]== 255 
-      && blackwhite_image[(x-7)+exclusion_pixel][((y-7)+13)][1] == 255 
-      && blackwhite_image[(x-7)+exclusion_pixel][((y-7)+13)][2] == 255) {
+			else if (blackwhite_image[(initial_posX)+exclusion_pixel][((initial_posY)+13)][0]== 255 
+      && blackwhite_image[(initial_posX)+exclusion_pixel][((initial_posY)+13)][1] == 255 
+      && blackwhite_image[(initial_posX)+exclusion_pixel][((initial_posY)+13)][2] == 255) {
 				return 1;
 				break;
 			}
       // if statement checks for white pixels in the LEFT side of square
-			else if(blackwhite_image[(x-7)][(y-7)+exclusion_pixel][0]== 255 
-      && blackwhite_image[(x-7)][(y-7)+exclusion_pixel][1] == 255 
-      && blackwhite_image[(x-7)][(y-7)+exclusion_pixel][2] == 255) {
+			else if(blackwhite_image[(initial_posX)][(initial_posY)+exclusion_pixel][0]== 255 
+      && blackwhite_image[(initial_posX)][(initial_posY)+exclusion_pixel][1] == 255 
+      && blackwhite_image[(initial_posX)][(initial_posY)+exclusion_pixel][2] == 255) {
 				return 1;
 				break;
 			}
       // if statement checks for white pixels in the RIGHT side of square
-			else if(blackwhite_image[((x-7)+13)][(y-7)+exclusion_pixel][0]== 255 
-      && blackwhite_image[((x-7)+13)][(y-7)+exclusion_pixel][1] == 255 
-      && blackwhite_image[((x-7)+13)][(y-7)+exclusion_pixel][2] == 255) {
+			else if(blackwhite_image[((initial_posX)+13)][(initial_posY)+exclusion_pixel][0]== 255 
+      && blackwhite_image[((initial_posX)+13)][(initial_posY)+exclusion_pixel][1] == 255 
+      && blackwhite_image[((initial_posX)+13)][(initial_posY)+exclusion_pixel][2] == 255) {
 				return 1;
 				break;
 			}
@@ -96,6 +100,7 @@ int checkExclusionFrame (unsigned char blackwhite_image[BMP_WIDTH][BMP_HEIGTH][B
                   // to let us know that we should break out of the nested detection 
                   // for-loop after coloring all the pixels black
 			    			  cell_count++;
+                  detected_cells[x][y] = 1;
                   flag = 1;
                   // after we have incremented the cell count, we color all the pixels
                   // in the detection area black and break out of
@@ -127,6 +132,29 @@ int checkExclusionFrame (unsigned char blackwhite_image[BMP_WIDTH][BMP_HEIGTH][B
       
       return cell_count;
      }
+
+void generateOutputImg (unsigned char input_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS], unsigned char redcross_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS] ){
+  for (int x = 0; x < BMP_WIDTH; x++){
+    for (int y = 0; y < BMP_HEIGTH; y++){
+        if( detected_cells[x][y] == 1) {
+          for( int k = -8; k < 8; k++){
+            // makes x pixels in cross red
+            redcross_image[x+k][y][0] = 255; 
+            redcross_image[x+k][y][1] = 0; 
+            redcross_image[x+k][y][2] = 0; 
+
+            // makes y pixels in cross red
+            redcross_image[x][y+k][0] = 255; 
+            redcross_image[x][y+k][1] = 0; 
+            redcross_image[x][y+k][2] = 0; 
+          }
+        }
+    }
+  }
+
+
+
+}
 
 // This function converts the image to black and white (applies the binary threshold)
 void convert_blackwhite(unsigned char input_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS], unsigned char blackwhite_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS])
@@ -227,6 +255,8 @@ unsigned char input_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS];
 unsigned char output_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS];
 unsigned char blackwhite_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS];
 unsigned char eroded_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS];
+unsigned char redcross_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS];
+
 
 
 // Main function
@@ -277,12 +307,24 @@ int main(int argc, char **argv)
   } while (pixelChange == 1 /*&& imgIndex < 10*/);
 
   // TODO: Generate output image
+  
 
   // TODO: Save output image and print results
   printf("Cell count: %d\n", cell_count);
 
   // Save image of each erosion step to file
   write_bitmap(eroded_image, argv[2]);
+
+
+
+
+  for ( int i = 0; i < BMP_WIDTH; i++){
+    for ( int j = 0; j < BMP_HEIGTH; j++){
+      if(detected_cells[i][j] == 1){
+      printf("Cell found at: (%d,%d) \n", i,j);
+      }
+    }
+  }
 
   printf("Done!\n");
   return 0;
