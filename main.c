@@ -62,7 +62,6 @@ void copyImage(unsigned char orgImg[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS], unsign
   }
 }
 
-
 // This function erodes the black and white image using binary erosion
 // Returns 1 if a pixel was changed as part of the erosion, 0 otherwise (if image is already black)
 int erode_image(unsigned char blackwhite_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS], unsigned char eroded_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS])
@@ -73,14 +72,18 @@ int erode_image(unsigned char blackwhite_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNE
     for (int y = 0; y < BMP_HEIGTH; y++)
     {
       int yLow = y - 1;
-      if (yLow < 0) yLow = 0;
+      if (yLow < 0)
+        yLow = 0;
       int yHigh = y + 1;
-      if (yHigh > BMP_HEIGTH) yHigh = BMP_HEIGTH;
+      if (yHigh > BMP_HEIGTH)
+        yHigh = BMP_HEIGTH;
 
       int xLow = x - 1;
-      if (xLow < 0) xLow = 0;
+      if (xLow < 0)
+        xLow = 0;
       int xHigh = x + 1;
-      if (xHigh > BMP_WIDTH) xHigh = BMP_WIDTH;
+      if (xHigh > BMP_WIDTH)
+        xHigh = BMP_WIDTH;
 
       // Change the color of the pixels according to the structuring element
       if (blackwhite_image[x][yLow][0] == 0 && blackwhite_image[x][yLow][1] == 0 && blackwhite_image[x][yLow][2] == 0)
@@ -108,7 +111,8 @@ int erode_image(unsigned char blackwhite_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNE
         eroded_image[x][y][2] = 0;
       }
       // pixelChange checks if any changes are made in the erosion step so we know when to stop
-      if(eroded_image[x][y][0] != blackwhite_image[x][y][0]) pixelChange = 1;
+      if (eroded_image[x][y][0] != blackwhite_image[x][y][0])
+        pixelChange = 1;
     }
   }
   return pixelChange;
@@ -143,34 +147,29 @@ int main(int argc, char **argv)
   // Run blackwhite conversion
   convert_blackwhite(input_image, blackwhite_image);
 
-  // saves our black_white_image so that we can look at it
-  //char bwImgName[100];
-  //sprintf(bwImgName,"black_white_%s", argv[2]);
-  //write_bitmap(blackwhite_image, bwImgName);
-
   int pixelChange = 0;
   int imgIndex = 0;
   copyImage(blackwhite_image, eroded_image);
-  
-  // do-while loop that allows us to run erosion and detection as long as the image is not fully eroded
-  do {
+
+  // Do-while loop that allows us to run erosion and detection as long as the image is not fully eroded
+  do
+  {
     // Runs the erosion
     pixelChange = erode_image(blackwhite_image, eroded_image);
 
-    //saves our erosion steps so that we can keep track of the erosion
-    char imgName[strlen(argv[2])+10];
+    // Saves our erosion steps so that we can keep track of the erosion
+    char imgName[strlen(argv[2]) + 10];
     sprintf(imgName, "tmp_%d_%s", imgIndex, argv[2]);
     write_bitmap(eroded_image, imgName);
 
     copyImage(eroded_image, blackwhite_image);
     imgIndex += 1;
-    // detection step (keep track of location of detected cells)
+    // TODO: Detection step (keep track of location of detected cells)
   } while (pixelChange == 1 /*&& imgIndex < 10*/);
 
-  // generate output image
+  // TODO: Generate output image
 
-  // save output image and print results
-  
+  // TODO: Save output image and print results
 
   // Save image of each erosion step to file
   write_bitmap(eroded_image, argv[2]);
