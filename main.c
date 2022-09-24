@@ -110,9 +110,9 @@ int checkExclusionFrame (unsigned char blackwhite_image[BMP_WIDTH][BMP_HEIGTH][B
                   // after we have incremented the cell count, we color all the pixels
                   // in the detection area black and break out of
                   
-                    for (int black_x = -6; black_x <= 6; black_x++ ) {
+                    for (int black_x = -6; black_x < 6; black_x++ ) {
 		    		
-		    		          for (int black_y = -6; black_y <= 6; black_y++) {
+		    		          for (int black_y = -6; black_y < 6; black_y++) {
                           blackwhite_image[x+black_x][y+black_y][0] = 0;
                           blackwhite_image[x+black_x][y+black_y][1] = 0;
                           blackwhite_image[x+black_x][y+black_y][2] = 0;
