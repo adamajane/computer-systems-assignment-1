@@ -39,6 +39,9 @@ int checkExclusionFrame(unsigned char blackwhite_image[BMP_WIDTH][BMP_HEIGTH][BM
   {
     int observed_x = initial_posX + exclusion_pixel;
     int observed_y = initial_posY + exclusion_pixel;
+
+    // this makes sure, that if the location we are currently observing is out of bounds
+    // we will go inside the boundaries before we start checking for the color. 
     if (observed_x < 0)
     {
       observed_x = 0;
@@ -57,32 +60,40 @@ int checkExclusionFrame(unsigned char blackwhite_image[BMP_WIDTH][BMP_HEIGTH][BM
     }
 
 
-    // if statement checks for white pixels in the UPPER side of square
+    // This if statement makes sure, that if the UPPER side of the square is out of bounds,
+    // we dont go through it
       if(initial_posY >= 0 ){
+        // if statement checks for white pixels in the UPPER side of square
       if (blackwhite_image[observed_x][(initial_posY)][0] == 255 && blackwhite_image[observed_x][(initial_posY)][1] == 255 && blackwhite_image[observed_x][(initial_posY)][2] == 255)
       {
         return 1;
         break;
       }
       }
-    // if statement checks for white pixels in the LOWER side of square
+    // This if statement makes sure, that if the LOWER side of the square is out of bounds,
+    // we dont go through it
     if(initial_posY + frame_size-1 <= BMP_HEIGTH-1){
+      // if statement checks for white pixels in the LOWER side of square
      if (blackwhite_image[observed_x][((initial_posY) + (frame_size - 1))][0] == 255 && blackwhite_image[observed_x][((initial_posY) + (frame_size - 1))][1] == 255 && blackwhite_image[observed_x][((initial_posY) + (frame_size - 1))][2] == 255)
     {
       return 1;
       break;
     }
     }
-    // if statement checks for white pixels in the LEFT side of square
+    // This if statement makes sure, that if the LEFT side of the square is out of bounds,
+    // we dont go through it
     if(initial_posX >= 0){
+      // if statement checks for white pixels in the LEFT side of square
      if (blackwhite_image[(initial_posX)][observed_y][0] == 255 && blackwhite_image[(initial_posX)][observed_y][1] == 255 && blackwhite_image[(initial_posX)][observed_y][2] == 255)
     {
       return 1;
       break;
     }
     }
-    // if statement checks for white pixels in the RIGHT side of square
+    // This if statement makes sure, that if the RIGHT side of the square is out of bounds,
+    // we dont go through it
     if(initial_posX + frame_size-1 <= BMP_WIDTH-1){
+      // if statement checks for white pixels in the RIGHT side of square
      if (blackwhite_image[((initial_posX) + (frame_size - 1))][observed_y][0] == 255 && blackwhite_image[((initial_posX) + (frame_size - 1))][observed_y][1] == 255 && blackwhite_image[((initial_posX) + (frame_size - 1))][observed_y][2] == 255)
     {
       return 1;
