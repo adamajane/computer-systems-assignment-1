@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include "cbmp.h"
 #include <string.h>
+#include <time.h>
 
 unsigned char detected_cells[BMP_WIDTH][BMP_HEIGTH];
 
@@ -278,6 +279,9 @@ int main(int argc, char **argv)
   }
 
   printf("Example program - 02132 - A1\n");
+  clock_t start, end;
+  double cpu_time_used;
+      start = clock();
 
   // Load image from file
   read_bitmap(argv[1], input_image);
@@ -289,6 +293,8 @@ int main(int argc, char **argv)
   int imgIndex = 0;
   int cell_count = 0;
   copyImage(blackwhite_image, eroded_image);
+
+
 
   // Do-while loop that allows us to run erosion and detection as long as the image is not fully eroded
   do
@@ -304,7 +310,10 @@ int main(int argc, char **argv)
     copyImage(eroded_image, blackwhite_image);
     imgIndex += 1;
     // TODO: Detection step (keep track of location of detected cells)
+
     cell_count += detectCell(blackwhite_image);
+
+
 
     // these two lines of code, changes the 10 output images, so it shows the red crosses
     // after every erosion step
@@ -320,7 +329,7 @@ int main(int argc, char **argv)
   write_bitmap(input_image, argv[2]);
 
   // TODO: Save output image and print results
-  printf("Cell count: %d\n", cell_count);
+
 
   for ( int i = 0; i < BMP_WIDTH; i++){
     for ( int j = 0; j < BMP_HEIGTH; j++){
@@ -329,7 +338,13 @@ int main(int argc, char **argv)
       }
     }
   }
+    printf("Cell count: %d\n", cell_count);
 
   printf("Done!\n");
+
+      end = clock();
+  cpu_time_used = end - start;
+  printf("Total time: %f ms\n", cpu_time_used * 1000.0 / CLOCKS_PER_SEC);
+
   return 0;
 }
