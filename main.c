@@ -56,29 +56,38 @@ int checkExclusionFrame(unsigned char blackwhite_image[BMP_WIDTH][BMP_HEIGTH][BM
       observed_y = BMP_HEIGTH - 1;
     }
 
+
     // if statement checks for white pixels in the UPPER side of square
-    if (blackwhite_image[observed_x][(initial_posY)][0] == 255 && blackwhite_image[observed_x][(initial_posY)][1] == 255 && blackwhite_image[observed_x][(initial_posY)][2] == 255)
+      if(initial_posY >= 0 ){
+      if (blackwhite_image[observed_x][(initial_posY)][0] == 255 && blackwhite_image[observed_x][(initial_posY)][1] == 255 && blackwhite_image[observed_x][(initial_posY)][2] == 255)
+      {
+        return 1;
+        break;
+      }
+      }
+    // if statement checks for white pixels in the LOWER side of square
+    if(initial_posY + frame_size-1 <= BMP_HEIGTH-1){
+     if (blackwhite_image[observed_x][((initial_posY) + (frame_size - 1))][0] == 255 && blackwhite_image[observed_x][((initial_posY) + (frame_size - 1))][1] == 255 && blackwhite_image[observed_x][((initial_posY) + (frame_size - 1))][2] == 255)
     {
       return 1;
       break;
     }
-    // if statement checks for white pixels in the LOWER side of square
-    else if (blackwhite_image[observed_x][((initial_posY) + (frame_size - 1))][0] == 255 && blackwhite_image[observed_x][((initial_posY) + (frame_size - 1))][1] == 255 && blackwhite_image[observed_x][((initial_posY) + (frame_size - 1))][2] == 255)
-    {
-      return 1;
-      break;
     }
     // if statement checks for white pixels in the LEFT side of square
-    else if (blackwhite_image[(initial_posX)][observed_y][0] == 255 && blackwhite_image[(initial_posX)][observed_y][1] == 255 && blackwhite_image[(initial_posX)][observed_y][2] == 255)
+    if(initial_posX >= 0){
+     if (blackwhite_image[(initial_posX)][observed_y][0] == 255 && blackwhite_image[(initial_posX)][observed_y][1] == 255 && blackwhite_image[(initial_posX)][observed_y][2] == 255)
     {
       return 1;
       break;
     }
+    }
     // if statement checks for white pixels in the RIGHT side of square
-    else if (blackwhite_image[((initial_posX) + (frame_size - 1))][observed_y][0] == 255 && blackwhite_image[((initial_posX) + (frame_size - 1))][observed_y][1] == 255 && blackwhite_image[((initial_posX) + (frame_size - 1))][observed_y][2] == 255)
+    if(initial_posX + frame_size-1 <= BMP_WIDTH-1){
+     if (blackwhite_image[((initial_posX) + (frame_size - 1))][observed_y][0] == 255 && blackwhite_image[((initial_posX) + (frame_size - 1))][observed_y][1] == 255 && blackwhite_image[((initial_posX) + (frame_size - 1))][observed_y][2] == 255)
     {
       return 1;
       break;
+    }
     }
   }
   return 0;
