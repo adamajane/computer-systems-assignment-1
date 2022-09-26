@@ -19,7 +19,7 @@ unsigned char detected_cells[BMP_WIDTH][BMP_HEIGTH];
 int check_exclusion_frame(unsigned char blackwhite_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS], int x, int y)
 {
   // Initiating for-loop, to go through 10 pixels on all 4 sides of the exclusionframe(square)
-  int frame_size = 10;
+  int frame_size = 18;
   int initial_posX = x - (frame_size / 2);
   int initial_posY = y - (frame_size / 2);
   for (int exclusion_pixel = 0; exclusion_pixel < frame_size; exclusion_pixel++)
@@ -105,18 +105,18 @@ int detect_cell(unsigned char blackwhite_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNE
   int cell_count = 0;
   int detect_x_min;
   int detect_y_min;
-  int detect_x_max = 4;
-  int detect_y_max = 4;
+  int detect_x_max = 8;
+  int detect_y_max = 8;
   int flag = 0;
   for (int x = 0; x < BMP_WIDTH; x++)
   {
     for (int y = 0; y < BMP_HEIGTH; y++)
     {
       // The next nested for-loop go through the 8x8 pixel area and checks for white pixel
-      for (detect_x_min = -4; detect_x_min < detect_x_max; detect_x_min++)
+      for (detect_x_min = -8; detect_x_min < detect_x_max; detect_x_min++)
       {
 
-        for (detect_y_min = -4; detect_y_min < detect_y_max; detect_y_min++)
+        for (detect_y_min = -8; detect_y_min < detect_y_max; detect_y_min++)
         {
           if (x + detect_x_min < 0)
           {
@@ -156,10 +156,10 @@ int detect_cell(unsigned char blackwhite_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNE
               // After we have incremented the cell count, we color all the pixels
               // in the detection area black and break out of
 
-              for (int black_x = -4; black_x < detect_x_max; black_x++)
+              for (int black_x = -8; black_x < detect_x_max; black_x++)
               {
 
-                for (int black_y = -4; black_y < detect_y_max; black_y++)
+                for (int black_y = -8; black_y < detect_y_max; black_y++)
                 {
                   if (x + black_x < 0)
                   {
