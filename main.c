@@ -9,6 +9,7 @@
 #include "cbmp.h"
 #include <string.h>
 #include <time.h>
+#include <math.h>
 
 unsigned char detected_cells[BMP_WIDTH][BMP_HEIGTH];
 
@@ -243,15 +244,87 @@ void generateOutputImg(unsigned char input_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHAN
   }
 }
 
+int otsu_method (unsigned char input_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS]){
+  double threshold = 1;
+  double otsu_final_value = 999999;
+  double final_threshold;
+
+while(threshold < 255){
+  double p_all = BMP_HEIGTH * BMP_WIDTH;
+  double p_bg = 0;
+  double p_fg = 0;
+
+  double bg_colorvalue_sum = 0;
+  double fg_colorvalue_sum = 0;
+
+  double variance_sum_bg = 0;
+  double variance_sum_fg = 0;
+
+  double otsu_value = 0;
+
+  for (int x = 0; x < BMP_WIDTH; x++)
+  {
+    for (int y = 0; y < BMP_HEIGTH; y++)
+    {
+      double pixel_value = (input_image[x][y][0] + input_image[x][y][1] + input_image[x][y][2])/3;
+
+      if ( pixel_value < threshold){
+        p_bg++;
+        bg_colorvalue_sum += pixel_value;
+      }
+      else {
+        p_fg++;
+        fg_colorvalue_sum += pixel_value;
+      }
+    }
+    
+  }
+
+  double omega_bg = p_bg/p_all;
+  double omega_fg = p_fg/p_all;
+
+  double bg_mean = bg_colorvalue_sum / p_bg;
+  double fg_mean = fg_colorvalue_sum / p_fg;
+
+  for (int x = 0; x < BMP_WIDTH; x++)
+  {
+    for (int y = 0; y < BMP_HEIGTH; y++)
+    {
+      int pixel_value = (input_image[x][y][0] + input_image[x][y][1] + input_image[x][y][2])/3;
+      if(pixel_value < threshold){
+      double squared_difference_bg = pow((pixel_value-bg_mean),2);
+      variance_sum_bg += squared_difference_bg;
+
+      }
+      else {
+        double squared_difference_fg = pow((pixel_value-fg_mean),2);
+        variance_sum_fg += squared_difference_fg;
+      }
+    }
+  }
+
+  double variance_fg = variance_sum_fg / p_fg;
+  double variance_bg = variance_sum_bg / p_bg;
+  otsu_value = omega_bg * variance_bg + omega_fg * variance_fg;
+
+  if(otsu_value < otsu_final_value){
+    otsu_final_value = otsu_value;
+    final_threshold = threshold;
+  }
+  threshold++;
+}
+  return final_threshold;
+}
+
 // This function converts the image to black and white (applies the binary threshold)
-void convert_blackwhite(unsigned char input_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS], unsigned char blackwhite_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS])
+void convert_blackwhite(unsigned char input_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS], unsigned char blackwhite_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS], int threshhold)
 {
   int res = 0;
   for (int x = 0; x < BMP_WIDTH; x++)
   {
     for (int y = 0; y < BMP_HEIGTH; y++)
     {
-      if ((input_image[x][y][0] + input_image[x][y][1] + input_image[x][y][2]) / 3 > 90)
+      if ((input_image[x][y][0] + input_image[x][y][1] + input_image[x][y][2]) / 3 > threshhold)
       {
         blackwhite_image[x][y][0] = 255;
         blackwhite_image[x][y][1] = 255;
@@ -368,7 +441,7 @@ int main(int argc, char **argv)
   read_bitmap(argv[1], input_image);
 
   // Run blackwhite conversion
-  convert_blackwhite(input_image, blackwhite_image);
+  convert_blackwhite(input_image, blackwhite_image, otsu_method(input_image));
 
   int pixelChange = 0;
   int imgIndex = 0;
@@ -419,6 +492,7 @@ int main(int argc, char **argv)
   printf("Cell count: %d\n", cell_count);
 
   printf("Done!\n");
+
 
   end = clock();
   cpu_time_used = end - start;
