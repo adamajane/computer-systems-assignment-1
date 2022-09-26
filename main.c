@@ -227,6 +227,8 @@ void generateOutputImg(unsigned char input_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHAN
         {
           for (int l = -2; l < 2; l++)
           {
+            if(x + k > 0 && x + k < BMP_WIDTH){
+              if(y + k > 0 && y + k < BMP_HEIGTH){
             // makes pixels in cross red
             input_image[x + k][y + l][0] = 255;
             input_image[x + k][y + l][1] = 0;
@@ -236,6 +238,8 @@ void generateOutputImg(unsigned char input_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHAN
             input_image[x + l][y + k][0] = 255;
             input_image[x + l][y + k][1] = 0;
             input_image[x + l][y + k][2] = 0;
+              }
+            }
           }
         }
       }
