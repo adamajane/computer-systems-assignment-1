@@ -112,7 +112,7 @@ int detect_cell(unsigned char blackwhite_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNE
   {
     for (int y = 0; y < BMP_HEIGTH; y++)
     {
-      // The next nested for-loop go through the 8x8 pixel area and checks for white pixel
+      // The next nested for-loop go through the 16x16 pixel area and checks for white pixel
       for (detect_x_min = -8; detect_x_min < detect_x_max; detect_x_min++)
       {
 
