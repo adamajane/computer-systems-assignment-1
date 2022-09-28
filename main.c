@@ -241,11 +241,11 @@ void generate_output_image(unsigned char input_image[BMP_WIDTH][BMP_HEIGTH][BMP_
 
 int otsu_method(unsigned char input_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS])
 {
-  double threshold = 1;
+  double threshold = 100;
   double otsu_final_value = 999999;
   double final_threshold;
 
-  while (threshold < 255)
+  while (threshold < 115)
   {
     double p_all = BMP_HEIGTH * BMP_WIDTH;
     double p_bg = 0;
