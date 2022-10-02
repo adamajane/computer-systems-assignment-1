@@ -17,7 +17,7 @@ int detection_area_size = 8;
 // This function checks all the pixels in the exclusion frame to see if there
 // is any white pixels. If there is, it should return 1. If there isn't, it
 // should return 0.
-int check_exclusion_frame(unsigned char blackwhite_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS], int x, int y)
+int check_exclusion_frame(unsigned char blackwhite_image[BMP_WIDTH][BMP_HEIGTH], int x, int y)
 {
   // Initiating for-loop, to go through 10 pixels on all 4 sides of the exclusionframe(square)
   int frame_size = detection_area_size * 2 + 2;
@@ -52,7 +52,7 @@ int check_exclusion_frame(unsigned char blackwhite_image[BMP_WIDTH][BMP_HEIGTH][
     if (initial_posY >= 0)
     {
       // If statement checks for white pixels in the UPPER side of square
-      if (blackwhite_image[observed_x][(initial_posY)][0] == 255 && blackwhite_image[observed_x][(initial_posY)][1] == 255 && blackwhite_image[observed_x][(initial_posY)][2] == 255)
+      if (blackwhite_image[observed_x][(initial_posY)] == 1)
       {
         return 1;
         break;
@@ -63,7 +63,7 @@ int check_exclusion_frame(unsigned char blackwhite_image[BMP_WIDTH][BMP_HEIGTH][
     if (initial_posY + frame_size - 1 <= BMP_HEIGTH - 1)
     {
       // if statement checks for white pixels in the LOWER side of square
-      if (blackwhite_image[observed_x][((initial_posY) + (frame_size - 1))][0] == 255 && blackwhite_image[observed_x][((initial_posY) + (frame_size - 1))][1] == 255 && blackwhite_image[observed_x][((initial_posY) + (frame_size - 1))][2] == 255)
+      if (blackwhite_image[observed_x][((initial_posY) + (frame_size - 1))] == 1)
       {
         return 1;
         break;
@@ -74,7 +74,7 @@ int check_exclusion_frame(unsigned char blackwhite_image[BMP_WIDTH][BMP_HEIGTH][
     if (initial_posX >= 0)
     {
       // if statement checks for white pixels in the LEFT side of square
-      if (blackwhite_image[(initial_posX)][observed_y][0] == 255 && blackwhite_image[(initial_posX)][observed_y][1] == 255 && blackwhite_image[(initial_posX)][observed_y][2] == 255)
+      if (blackwhite_image[(initial_posX)][observed_y] == 1)
       {
         return 1;
         break;
@@ -85,7 +85,7 @@ int check_exclusion_frame(unsigned char blackwhite_image[BMP_WIDTH][BMP_HEIGTH][
     if (initial_posX + frame_size - 1 <= BMP_WIDTH - 1)
     {
       // If statement checks for white pixels in the RIGHT side of square
-      if (blackwhite_image[((initial_posX) + (frame_size - 1))][observed_y][0] == 255 && blackwhite_image[((initial_posX) + (frame_size - 1))][observed_y][1] == 255 && blackwhite_image[((initial_posX) + (frame_size - 1))][observed_y][2] == 255)
+      if (blackwhite_image[((initial_posX) + (frame_size - 1))][observed_y] == 1)
       {
         return 1;
         break;
@@ -95,13 +95,13 @@ int check_exclusion_frame(unsigned char blackwhite_image[BMP_WIDTH][BMP_HEIGTH][
   return 0;
 }
 
-// for every pixel in the image, we check the 12x12 pixel area around it. The
+// For every pixel in the image, we check the 12x12 pixel area around it. The
 // pixel we are looking at in this 12by12 area, is located at (7,7).
 // if there is a white pixel in this area, we should proceed to check if the
 // exclusionframe contains any white pixels, using the "check_exclusion_frame()"- function.
 // If it doesn't contain a white pixel, we will add 1 to cell_count, color the entire
 // area black, and move on to the next pixel.
-int detect_cell(unsigned char blackwhite_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS])
+int detect_cell(unsigned char blackwhite_image[BMP_WIDTH][BMP_HEIGTH])
 {
   int cell_count = 0;
   int detect_x_min;
@@ -142,7 +142,7 @@ int detect_cell(unsigned char blackwhite_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNE
             break;
           }
 
-          if (blackwhite_image[x + detect_x_min][y + detect_y_min][0] == 255 && blackwhite_image[x + detect_x_min][y + detect_y_min][1] == 255 && blackwhite_image[x + detect_x_min][y + detect_y_min][2] == 255)
+          if (blackwhite_image[x + detect_x_min][y + detect_y_min] == 1)
           {
 
             if (check_exclusion_frame(blackwhite_image, x, y) == 0)
@@ -184,9 +184,7 @@ int detect_cell(unsigned char blackwhite_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNE
                   {
                     break;
                   }
-                  blackwhite_image[x + black_x][y + black_y][0] = 0;
-                  blackwhite_image[x + black_x][y + black_y][1] = 0;
-                  blackwhite_image[x + black_x][y + black_y][2] = 0;
+                  blackwhite_image[x + black_x][y + black_y] = 0;
                 }
               }
 
@@ -317,7 +315,7 @@ int otsu_method(unsigned char input_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS])
 }
 
 // This function converts the image to black and white (applies the binary threshold)
-void convert_blackwhite(unsigned char input_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS], unsigned char blackwhite_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS], int threshold)
+void convert_blackwhite(unsigned char input_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS], unsigned char blackwhite_image[BMP_WIDTH][BMP_HEIGTH], int threshold)
 {
 
   for (int x = 0; x < BMP_WIDTH; x++)
@@ -326,95 +324,81 @@ void convert_blackwhite(unsigned char input_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHA
     {
       if ((input_image[x][y][0] + input_image[x][y][1] + input_image[x][y][2]) / 3 > threshold)
       {
-        blackwhite_image[x][y][0] = 255;
-        blackwhite_image[x][y][1] = 255;
-        blackwhite_image[x][y][2] = 255;
+        blackwhite_image[x][y] = 1;
       }
       else
       {
-        blackwhite_image[x][y][0] = 0;
-        blackwhite_image[x][y][1] = 0;
-        blackwhite_image[x][y][2] = 0;
+        blackwhite_image[x][y] = 0;
       }
     }
   }
 }
 
 // This function makes a copy of our image so that we can always apply our erosion onto a new array
-void copy_image(unsigned char orgImg[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS], unsigned char cpyImg[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS])
+void copy_image(unsigned char orgImg[BMP_WIDTH][BMP_HEIGTH], unsigned char cpyImg[BMP_WIDTH][BMP_HEIGTH])
 {
   for (int x = 0; x < BMP_WIDTH; x++)
   {
     for (int y = 0; y < BMP_HEIGTH; y++)
     {
-      cpyImg[x][y][0] = orgImg[x][y][0];
-      cpyImg[x][y][1] = orgImg[x][y][1];
-      cpyImg[x][y][2] = orgImg[x][y][2];
+      cpyImg[x][y] = orgImg[x][y];
     }
   }
 }
 
 // This function erodes the black and white image using binary erosion
 // Returns 1 if a pixel was changed as part of the erosion, 0 otherwise (if image is already black)
-int erode_image(unsigned char blackwhite_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS], unsigned char eroded_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS])
+int erode_image(unsigned char blackwhite_image[BMP_WIDTH][BMP_HEIGTH], unsigned char eroded_image[BMP_WIDTH][BMP_HEIGTH])
 {
-  int pixelChange = 0;
+  int pixel_change = 0;
   for (int x = 0; x < BMP_WIDTH; x++)
   {
     for (int y = 0; y < BMP_HEIGTH; y++)
     {
-      int yLow = y - 1;
-      if (yLow < 0)
-        yLow = 0;
-      int yHigh = y + 1;
-      if (yHigh > BMP_HEIGTH)
-        yHigh = BMP_HEIGTH;
+      int y_low = y - 1;
+      if (y_low < 0)
+        y_low = 0;
+      int y_high = y + 1;
+      if (y_high > BMP_HEIGTH)
+        y_high = BMP_HEIGTH;
 
-      int xLow = x - 1;
-      if (xLow < 0)
-        xLow = 0;
-      int xHigh = x + 1;
-      if (xHigh > BMP_WIDTH)
-        xHigh = BMP_WIDTH;
+      int x_low = x - 1;
+      if (x_low < 0)
+        x_low = 0;
+      int x_high = x + 1;
+      if (x_high > BMP_WIDTH)
+        x_high = BMP_WIDTH;
 
       // Change the color of the pixels according to the structuring element
-      if (blackwhite_image[x][yLow][0] == 0 && blackwhite_image[x][yLow][1] == 0 && blackwhite_image[x][yLow][2] == 0)
+      if (blackwhite_image[x][y_low] == 0)
       {
-        eroded_image[x][y][0] = 0;
-        eroded_image[x][y][1] = 0;
-        eroded_image[x][y][2] = 0;
+        eroded_image[x][y] = 0;
       }
-      else if (blackwhite_image[x][yHigh][0] == 0 && blackwhite_image[x][yHigh][1] == 0 && blackwhite_image[x][yHigh][2] == 0)
+      else if (blackwhite_image[x][y_high] == 0)
       {
-        eroded_image[x][y][0] = 0;
-        eroded_image[x][y][1] = 0;
-        eroded_image[x][y][2] = 0;
+        eroded_image[x][y] = 0;
       }
-      else if (blackwhite_image[xLow][y][0] == 0 && blackwhite_image[xLow][y][1] == 0 && blackwhite_image[xLow][y][2] == 0)
+      else if (blackwhite_image[x_low][y] == 0)
       {
-        eroded_image[x][y][0] = 0;
-        eroded_image[x][y][1] = 0;
-        eroded_image[x][y][2] = 0;
+        eroded_image[x][y] = 0;
       }
-      else if (blackwhite_image[xHigh][y][0] == 0 && blackwhite_image[xHigh][y][1] == 0 && blackwhite_image[xHigh][y][2] == 0)
+      else if (blackwhite_image[x_high][y] == 0)
       {
-        eroded_image[x][y][0] = 0;
-        eroded_image[x][y][1] = 0;
-        eroded_image[x][y][2] = 0;
+        eroded_image[x][y] = 0;
       }
-      // pixelChange checks if any changes are made in the erosion step so we know when to stop
-      if (eroded_image[x][y][0] != blackwhite_image[x][y][0])
-        pixelChange = 1;
+      // pixel_change checks if any changes are made in the erosion step so we know when to stop
+      if (eroded_image[x][y] != blackwhite_image[x][y])
+        pixel_change = 1;
     }
   }
-  return pixelChange;
+  return pixel_change;
 }
 
 // Declaring the arrays to store the images (unsigned char = unsigned 8 bit)
 unsigned char input_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS];
 unsigned char output_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS];
-unsigned char blackwhite_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS];
-unsigned char eroded_image[BMP_WIDTH][BMP_HEIGTH][BMP_CHANNELS];
+unsigned char blackwhite_image[BMP_WIDTH][BMP_HEIGTH];
+unsigned char eroded_image[BMP_WIDTH][BMP_HEIGTH];
 
 // Main function
 int main(int argc, char **argv)
@@ -442,8 +426,7 @@ int main(int argc, char **argv)
   // Run blackwhite conversion
   convert_blackwhite(input_image, blackwhite_image, otsu_method(input_image));
 
-  int pixelChange = 0;
-  int imgIndex = 0;
+  int pixel_change = 0;
   int cell_count = 0;
   copy_image(blackwhite_image, eroded_image);
 
@@ -451,24 +434,14 @@ int main(int argc, char **argv)
   do
   {
     // Runs the erosion
-    pixelChange = erode_image(blackwhite_image, eroded_image);
-
-    // Saves our erosion steps so that we can keep track of the erosion
-    char imgName[strlen(argv[2]) + 10];
-    sprintf(imgName, "tmp_%d_%s", imgIndex, argv[2]);
-    write_bitmap(eroded_image, imgName);
+    pixel_change = erode_image(blackwhite_image, eroded_image);
 
     copy_image(eroded_image, blackwhite_image);
-    imgIndex += 1;
+
     // Keeps track of the location of each detected cell
     cell_count += detect_cell(blackwhite_image);
 
-    // these two lines of code, changes the 10 output images, so it shows the red crosses
-    // after every erosion step
-    // generate_output_image(input_image);
-    // write_bitmap(input_image, imgName);
-
-  } while (pixelChange == 1 /*&& imgIndex < 10*/);
+  } while (pixel_change == 1 /*&& imgIndex < 10*/);
 
   // Generates output image with red crosses into "example_inv.bmp"
   generate_output_image(input_image);
